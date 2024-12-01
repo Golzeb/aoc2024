@@ -1,4 +1,5 @@
 use std::{
+    collections::HashMap,
     fs::File,
     io::{BufRead, BufReader},
 };
@@ -58,9 +59,14 @@ fn part1(first_list: &[i64], second_list: &[i64]) -> i64 {
 }
 
 fn part2(first_list: &[i64], second_list: &[i64]) -> i64 {
+    let freqs: HashMap<i64, i64> = second_list.iter().fold(HashMap::new(), |mut map, &e| {
+        *map.entry(e).or_default() += 1;
+        map
+    });
+
     first_list
         .iter()
-        .map(|e| (second_list.iter().filter(|&x| x == e).count() as i64) * e)
+        .map(|e| freqs.get(e).map_or(0, |&x| x) * e)
         .sum()
 }
 
