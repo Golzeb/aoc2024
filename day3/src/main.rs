@@ -4,7 +4,7 @@ use std::{
 };
 
 #[derive(Debug)]
-enum Ops {
+enum Op {
     Mul { x: i64, y: i64 },
     Do,
     Dont,
@@ -78,7 +78,7 @@ fn load_input(path: &'static str) -> String {
     out
 }
 
-fn parse_input(data: &str) -> Vec<Ops> {
+fn parse_input(data: &str) -> Vec<Op> {
     const PATTERN_MUL: [ParserPattern; 5] = [
         ParserPattern::String("mul("),
         ParserPattern::Number(3),
@@ -94,7 +94,7 @@ fn parse_input(data: &str) -> Vec<Ops> {
 
     let data_chars: Vec<char> = data.chars().collect();
 
-    let mut out: Vec<Ops> = Vec::new();
+    let mut out: Vec<Op> = Vec::new();
 
     let mut current_value = String::new();
     let mut temp = String::new();
@@ -173,13 +173,13 @@ fn parse_input(data: &str) -> Vec<Ops> {
                         .split(",")
                         .map(|e| i64::from_str_radix(e, 10).unwrap());
 
-                    out.push(Ops::Mul {
+                    out.push(Op::Mul {
                         x: it.next().unwrap(),
                         y: it.next().unwrap(),
                     });
                 }
-                1 => out.push(Ops::Do),
-                2 => out.push(Ops::Dont),
+                1 => out.push(Op::Do),
+                2 => out.push(Op::Dont),
                 _ => {
                     unreachable!()
                 }
@@ -193,23 +193,23 @@ fn parse_input(data: &str) -> Vec<Ops> {
     out
 }
 
-fn part1(ops: &[Ops]) -> i64 {
+fn part1(ops: &[Op]) -> i64 {
     ops.iter()
         .filter_map(|e| match e {
-            Ops::Mul { x, y } => Some(x * y),
+            Op::Mul { x, y } => Some(x * y),
             _ => None,
         })
         .sum()
 }
 
-fn part2(ops: &[Ops]) -> i64 {
+fn part2(ops: &[Op]) -> i64 {
     let mut enabled = true;
     ops.iter()
         .filter_map(|e| {
             if enabled {
                 match e {
-                    Ops::Mul { x, y } => Some(x * y),
-                    Ops::Dont => {
+                    Op::Mul { x, y } => Some(x * y),
+                    Op::Dont => {
                         enabled = false;
                         None
                     }
@@ -217,7 +217,7 @@ fn part2(ops: &[Ops]) -> i64 {
                 }
             } else {
                 match e {
-                    Ops::Do => {
+                    Op::Do => {
                         enabled = true;
                         None
                     }
