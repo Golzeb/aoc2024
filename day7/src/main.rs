@@ -77,7 +77,7 @@ fn part2(equations: &[Equation]) -> i64 {
     let operations: Vec<fn(i64, i64) -> i64> = vec![
         |a: i64, b: i64| -> i64 { a + b },
         |a: i64, b: i64| -> i64 { a * b },
-        |a: i64, b: i64| -> i64 { format!("{}{}", a, b).parse::<i64>().unwrap() },
+        |a: i64, b: i64| -> i64 { a * 10i64.pow(((b as f32).log10() + 1.0).floor() as u32) + b },
     ];
 
     equations
